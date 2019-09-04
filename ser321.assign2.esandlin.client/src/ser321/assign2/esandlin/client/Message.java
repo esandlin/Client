@@ -1,53 +1,266 @@
 package ser321.assign2.esandlin.client;
 
 
-import javax.swing.DefaultListModel;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.TreeSelectionModel;
+import javax.swing.JOptionPane;
+import java.net.URL;
 import java.util.Date;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JFrame;
+import javax.swing.tree.TreePath;
+import javax.swing.event.TreeSelectionListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.File;
 
-/*
- * Copyright 2019 Tim Lindquist,
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Purpose: demonstrate use of MessageGui class for students to use as a
- * basis for solving Ser321 Spring 2019 Homework Problems.
- * The class SampleClient can be used by students in constructing their 
- * controller for solving homework problems. The view class is MessageGui.
- *
- * This problem set uses a swing user interface to implement (secure) messaging.
- * Messages are communicated to/from message clients, via a common well-known.
- * server.
- * Messages can be sent in clear text, or using password based encryption 
- * (last assignment). For secure messages, the message receiver must enter
- * the password (encrypted).
- * The Message tab has two panes. left pane contains a JList of messages
- * for the user. The right pane is a JTextArea, which can display the
- * contents of a selected message. This pane is also used to compose
- * messages that are to be sent.
- *
+/**
+ * Copyright (c) 2015 Tim Lindquist,
+ * Software Engineering,
+ * Arizona State University at the Polytechnic campus
+ * <p/>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation version 2
+ * of the License.
+ * <p/>
+ * This program is distributed in the hope that it will be useful,
+ * but without any warranty or fitness for a particular purpose.
+ * <p/>
+ * Please review the GNU General Public License at:
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ * see also: https://www.gnu.org/licenses/gpl-faq.html
+ * so you are aware of the terms and your rights with regard to this software.
+ * Or, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,USA
+ * <p/>
+ * Purpose: Sample Java Swing controller class. FolderBrowserGUI constructs the view components
+ * for a sample GUI. This class is extends the GUI to provide the control functionality.
+ * When the user does a tree node selection, this valueChanged is called, but virtue of being a
+ * TreeSelectionListener and adding itself as a listerner. FolderBrowser defines the call-backs
+ * for the JButton as well.
+ * It contains sample control functions that respond to button clicks and tree
+ * selects.
+ * This software is meant to run on Debian Wheezy Linux
+ * <p/>
  * Ser321 Principles of Distributed Software Systems
  * see http://pooh.poly.asu.edu/Ser321
- * @author Tim Lindquist Tim.Lindquist@asu.edu
- *         Software Engineering, CIDSE, IAFSE, ASU Poly
- * @version January 2019
- */
+ * @author Tim Lindquist (Tim.Lindquist@asu.edu) CIDSE - Software Engineering,
+ *                       IAFSE, ASU at the Polytechnic campus
+ * @file    FolderBrowserGUI.java
+ * @date    July, 2015
+ **/
 
-public class Message {
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Cursor;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.SystemColor;
 
+public class Message implements ActionListener, ListSelectionListener {
+
+	private JFrame frame;
+	private JTextField toTextField;
+	private JTextField subjectTextField;
+	private JTextField FromtextField;
+	private JTextField DatetextField;
+
+	/**
+	 * Main Launches the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Message window = new Message();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public Message() {
+		initialize();
+		
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setTitle("Eric Sandlin's Messaging Client for user: esandlin");
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 450, 39);
+		frame.getContentPane().add(panel);
+		
+		JButton btnDeleteButton = new JButton("Delete");
+		btnDeleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		btnDeleteButton.setBackground(Color.GRAY);
+		panel.add(btnDeleteButton);
+		
+		JButton btnReplyButton = new JButton("Reply");
+		btnReplyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnReplyButton.setBackground(Color.GRAY);
+		panel.add(btnReplyButton);
+		
+		JButton btnSendTextButton = new JButton("Send Text");
+		btnSendTextButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnSendTextButton.setBackground(Color.GRAY);
+		panel.add(btnSendTextButton);
+		
+		JButton btnCipherButton = new JButton("Send Cipher");
+		btnCipherButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnCipherButton.setBackground(Color.GRAY);
+		panel.add(btnCipherButton);
+		
+		toTextField = new JTextField();
+		toTextField.setBounds(204, 51, 61, 26);
+		frame.getContentPane().add(toTextField);
+		toTextField.setColumns(10);
+		
+		subjectTextField = new JTextField();
+		subjectTextField.setBounds(204, 89, 61, 26);
+		frame.getContentPane().add(subjectTextField);
+		subjectTextField.setColumns(10);
+		
+		FromtextField = new JTextField();
+		FromtextField.setBounds(314, 51, 130, 26);
+		frame.getContentPane().add(FromtextField);
+		FromtextField.setColumns(10);
+		
+		DatetextField = new JTextField();
+		DatetextField.setBounds(314, 89, 130, 26);
+		frame.getContentPane().add(DatetextField);
+		DatetextField.setColumns(10);
+		
+		JLabel lblFromLabel = new JLabel("From:");
+		lblFromLabel.setBounds(277, 56, 36, 16);
+		frame.getContentPane().add(lblFromLabel);
+		
+		JLabel lblToLabel = new JLabel("To:");
+		lblToLabel.setBounds(187, 56, 20, 16);
+		frame.getContentPane().add(lblToLabel);
+		
+		JLabel lblSubjectLabel = new JLabel("Subject:");
+		lblSubjectLabel.setBounds(157, 94, 50, 16);
+		frame.getContentPane().add(lblSubjectLabel);
+		
+		JLabel lblDateLabel = new JLabel("Date:");
+		lblDateLabel.setBounds(277, 94, 36, 16);
+		frame.getContentPane().add(lblDateLabel);
+		
+		JTree treePane = new JTree();
+		treePane.setBounds(10, 74, 135, 198);
+		frame.getContentPane().add(treePane);
+		
+		JEditorPane editorPaneOutput = new JEditorPane();
+		editorPaneOutput.setBounds(157, 116, 287, 100);
+		frame.getContentPane().add(editorPaneOutput);
+		
+		JEditorPane statusPane = new JEditorPane();
+		statusPane.setBounds(221, 228, 223, 44);
+		frame.getContentPane().add(statusPane);
+		
+		JLabel lblStatusLabel = new JLabel("Status:");
+		lblStatusLabel.setBounds(170, 241, 49, 16);
+		frame.getContentPane().add(lblStatusLabel);
+		
+		JLabel lblMessageLabel = new JLabel("Messages for Eric.Sandlin");
+		lblMessageLabel.setFont(new Font("Arial Narrow", Font.PLAIN, 10));
+		lblMessageLabel.setBounds(10, 51, 135, 16);
+		frame.getContentPane().add(lblMessageLabel);
+	}
+	/**
+	    * actionPerformed is defined by the ActionListener interface.
+	    * An object of FolderBrowser registers itself to hear about action events
+	    * caused by the <b>Button Clicks</b> and <b>Menu selecions (none here)</b>.
+	    * @param ActionEvent the event object created by the source of the
+	    * button push (the JButton object.)
+	    */
+	   public void actionPerformed(ActionEvent e) {
+	      // the actions in this method do NOT reflect what has to be done in handling
+	      // these different actions, but are designed to demonstrate how to access the
+	      // view objects.
+
+	      // If you do something (in here or anywhere) that takes lots of time, you may want
+	      // to change the cursor to an hourglass (waitcursor) while you're doing it. Really
+	      // though, you should use a javax.swing.SwingWorker class to perform any long-lasting
+	      // operations in the background, so the UI is not frozen while a network
+	      // or other long lasting operation is performed. Users don't like non-responsive apps.
+		//setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		   // put switch case here
+	      if(e.getActionCommand().equals("Delete")) {
+	    	  
+	      }
+	      else if(e.getActionCommand().equals("Reply")) {
+	    	  
+	      }
+	      else if(e.getActionCommand().equals("Send Text")) {
+	    	  
+	      }
+	      else if(e.getActionCommand().equals("Send Cipher")) {
+	    	  
+	      } 
+	}
+	
+	/**
+	 * @param e
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		      // If you do something (in here or anywhere) that takes lots of time, you may want
+		      // to change the cursor to hourglass (waitcursor) while you're doing it. See
+		      // the setCursor calls in the actionPerformed method. Really, though you
+		      // should use a javax.swing.SwingWorker class to perform any long-lasting
+		      // operations in the background, so the UI is not frozen while a network
+		      // or other long lasting operation is performed.
+
+		      // the call to getvalueisadjusting determines whether we're being called
+		      // for the last in a sequence of related (event-generating) user actions.
+		      // we generally don't want to redo handling multiple times.
+	   }
+	
 }
