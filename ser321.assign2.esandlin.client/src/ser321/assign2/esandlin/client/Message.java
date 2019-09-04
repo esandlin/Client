@@ -82,6 +82,18 @@ public class Message implements ActionListener, ListSelectionListener {
 	private JTextField FromtextField;
 	private JTextField DatetextField;
 
+    public class Message implements MessageLibrary {
+        private String content;
+        
+        public String getContent() {
+            return content;
+        }
+        
+        public void setContent(String content) {
+            this.content = content;
+        }
+    }
+    
 	/**
 	 * Main Launches the application.
 	 */
