@@ -1,6 +1,4 @@
-/~/ser321/assign2/esandlin/client/
 
-<?xml version="1.0"?>
 <project name="MVC GUI w/ Json"
     default="targets" basedir="."
     xmlns:dn="antlib:org.apache.ant.dotnet"
